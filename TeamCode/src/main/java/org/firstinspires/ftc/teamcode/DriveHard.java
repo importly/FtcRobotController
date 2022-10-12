@@ -29,9 +29,6 @@ public class DriveHard extends OpMode{
 
     public void loop() {
         drive();
-        duckSpinner();
-        slides();
-
         telemetry();
     }
 
@@ -100,39 +97,33 @@ public class DriveHard extends OpMode{
         robot.back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    // Handle Duck Spinner controls
-    private void duckSpinner() {
-        robot.duck_motor.setPower(gamepad2.right_trigger);
-        robot.duck_motor.setPower(-gamepad2.left_trigger);
-    }
-
     // Move the slides up and down and spin the intake motor
-    private void slides() {
-        robot.slides_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if(gamepad2.right_stick_y > 0 && robot.slides_motor.getCurrentPosition() <= 0) 
-        {
-            robot.slides_motor.setPower(gamepad2.right_stick_y);
-        }
-    
-        else if(gamepad2.right_stick_y < 0 && robot.slides_motor.getCurrentPosition() >= -3150) 
-        {
-            robot.slides_motor.setPower(gamepad2.right_stick_y);
-        }
-        else 
-        {
-            robot.slides_motor.setPower(0);
-        }
-        
-        robot.intake_spinner.setPower(gamepad2.left_stick_y);        
-    }
+//    private void slides() {
+//        robot.slides_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        if(gamepad2.right_stick_y > 0 && robot.slides_motor.getCurrentPosition() <= 0)
+//        {
+//            robot.slides_motor.setPower(gamepad2.right_stick_y);
+//        }
+//
+//        else if(gamepad2.right_stick_y < 0 && robot.slides_motor.getCurrentPosition() >= -3150)
+//        {
+//            robot.slides_motor.setPower(gamepad2.right_stick_y);
+//        }
+//        else
+//        {
+//            robot.slides_motor.setPower(0);
+//        }
+//
+//        robot.intake_spinner.setPower(gamepad2.left_stick_y);
+//    }
 
     // Display info on the driver station
     private void telemetry() {
         telemetry.addData("Running", "Loop");
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         
-        telemetry.addData("Slide Motor", "Position: " + robot.slides_motor.getCurrentPosition());
+        //telemetry.addData("Slide Motor", "Position: " + robot.slides_motor.getCurrentPosition());
         telemetry.addData("Test Encoder", "Ticks: " + robot.x_encoder.getCurrentPosition());
     }
 }
