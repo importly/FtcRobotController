@@ -68,8 +68,7 @@ public class ShivaRobot {
         back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Slides motors
-
-        // Duck motors
+        //slides_motor = hardwareMap.get(DcMotor.class, "slides");
 
          // Dead wheel encoders; set current position to 0,0
          x_encoder = back_left;
@@ -82,6 +81,7 @@ public class ShivaRobot {
         // It's recommended to use NormalizedColorSensor over ColorSensor, because
         // NormalizedColorSensor consistently gives values between 0 and 1, while
         // the values you get from ColorSensor are dependent on the specific sensor you're using.
+        //allianceColorSensor = hardwareMap.get(NormalizedColorSensor.class, "alliance_sensor");
 
         // Reverse the direction of the right side motors,
         // so power with the same sing (+ or -) causes the robot to move in the same direction,
