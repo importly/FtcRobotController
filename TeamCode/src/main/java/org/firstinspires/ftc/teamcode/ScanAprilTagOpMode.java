@@ -26,12 +26,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.navigation.Gyro;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.firstinspires.ftc.teamcode.vision.ScanAprilTagPipeline;
+import org.firstinspires.ftc.teamcode.navigation.DriveTrain;
 
 import java.util.ArrayList;
 
@@ -61,9 +63,13 @@ public class ScanAprilTagOpMode extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
+    ShivaRobot robot = new ShivaRobot();
+
     @Override
     public void runOpMode()
     {
+        robot.init(telemetry, hardwareMap);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         scanAprilTagPipeline = new ScanAprilTagPipeline(tagsize, fx, fy, cx, cy);
@@ -86,10 +92,6 @@ public class ScanAprilTagOpMode extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = scanAprilTagPipeline.getLatestDetections();
@@ -149,12 +151,6 @@ public class ScanAprilTagOpMode extends LinearOpMode
             sleep(20);
         }
 
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
-        /* Update the telemetry */
         if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
@@ -167,18 +163,58 @@ public class ScanAprilTagOpMode extends LinearOpMode
             telemetry.update();
         }
 
-        if(tagOfInterest == null || tagOfInterest.id == LEFT){
-            //PARK LEFT
+        if(tagOfInterest == null){
+            park(MIDDLE);
         }
-        else if(tagOfInterest.id == MIDDLE){
-            //PARK RIGHT
+        else{
+            park(tagOfInterest.id);
         }
-        else if(tagOfInterest.id == RIGHT){
-            //PARK RIGHT
-        }
+    }
 
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+    void park (int zone){
+        if(zone == LEFT){
+            robot.front_left.setPower(0.3);
+            robot.front_right.setPower(0.3);
+            robot.back_left.setPower(-0.3);
+            robot.back_right.setPower(-0.3);
+            sleep(1000);
+            robot.front_left.setPower(0.3);
+            robot.front_right.setPower(0.3);
+            robot.back_left.setPower(0.3);
+            robot.back_right.setPower(0.3);
+            sleep(500);
+            robot.front_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_left.setPower(0);
+            robot.back_right.setPower(0);
+        }
+        else if(zone == MIDDLE){
+            robot.front_left.setPower(0.3);
+            robot.front_right.setPower(0.3);
+            robot.back_left.setPower(0.3);
+            robot.back_right.setPower(0.3);
+            sleep(500);
+            robot.front_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_left.setPower(0);
+            robot.back_right.setPower(0);
+        }
+        else if(zone == RIGHT){
+            robot.front_left.setPower(-0.3);
+            robot.front_right.setPower(-0.3);
+            robot.back_left.setPower(0.3);
+            robot.back_right.setPower(0.3);
+            sleep(1000);
+            robot.front_left.setPower(0.3);
+            robot.front_right.setPower(0.3);
+            robot.back_left.setPower(0.3);
+            robot.back_right.setPower(0.3);
+            sleep(500);
+            robot.front_left.setPower(0);
+            robot.front_right.setPower(0);
+            robot.back_left.setPower(0);
+            robot.back_right.setPower(0);
+        }
     }
 
     void tagToTelemetry(AprilTagDetection detection)
