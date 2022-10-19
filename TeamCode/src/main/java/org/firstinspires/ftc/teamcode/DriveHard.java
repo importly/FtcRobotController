@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -7,6 +8,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
+import org.firstinspires.ftc.teamcode.navigation.Gyro;
 
 /**
  * This op-mode runs the robot during the Driver Controlled Period.
@@ -21,6 +25,7 @@ public class DriveHard extends OpMode{
     private double TICKS_PER_360 = MOTOR_TICKS_PER_360 * GEAR_RATIO;
 
     private ShivaRobot robot = new ShivaRobot();
+    Gyro gyro = new Gyro();
     
     public void init() {
         // Initialize the robot interface
@@ -37,32 +42,39 @@ public class DriveHard extends OpMode{
     private void drive() {
         // Mecanum drive is controlled with three axes: drive (front-and-back),
         // strafe (left-and-right), and twist (rotating the whole chassis).
-        double drive  = gamepad1.left_stick_y;
+        double yControl  = gamepad1.left_stick_y;
         double twist = -gamepad1.right_stick_x / 2;
-        double strafe = -gamepad1.left_stick_x / 2;
+        double xControl = -gamepad1.left_stick_x / 2;
+        double gyroAngle =  gyro.getCurrentAngle();
         
         if(gamepad1.dpad_up)
         {
-            drive = -0.2;
+            yControl = -0.2;
         }
         if(gamepad1.dpad_down)
         {
-            drive = 0.2;
+            yControl = 0.2;
         }
         if(gamepad1.dpad_left)
         {
-            strafe = 0.4;
+            xControl = 0.4;
         }
         if(gamepad1.dpad_right)
         {
-            strafe = -0.4;
+            xControl = -0.4;
         }
-
+        //
+        //double cosA = Math.cos(angle * (Math.PI / 180.0));
+        //double sinA = Math.sin(angle * (Math.PI / 180.0));
+        //
+        //yControl =  yControl * cosA - xControl * sinA;
+        //xControl =  yControl * sinA + xControl * cosA;
+        //
         double[] speeds = {
-            -(drive + strafe + twist), //Front left power
-            -(drive - strafe - twist), //Front right power
-            -(drive - strafe + twist), //Back left power
-            -(drive + strafe - twist) //Back right power
+            -(yControl + xControl + twist), //Front left power
+            -(yControl - xControl - twist), //Front right power
+            -(yControl - xControl + twist), //Back left power
+            -(yControl + xControl - twist) //Back right power
         };
 
 
