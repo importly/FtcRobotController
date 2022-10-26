@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -13,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * This class is used to define all the specific hardware for our robot.
  * All other code can use this class to refer to the robot hardware as software objects.
  */
-public class ShivaRobot {
+public class ShivaRobotAS {
 
     // Wheel motors
     public DcMotor front_left = null;
@@ -39,7 +37,7 @@ public class ShivaRobot {
     public NormalizedColorSensor allianceColorSensor = null;
 
     // Constants
-    public static final double MOTOR_TICKS_PER_360 = 1120;
+    public static final double MOTOR_TICKS_PER_360 = 537.7;
     public static final double DEAD_WHEEL_TICKS = 4190;
 
     // For doing execution time measurements
@@ -49,7 +47,7 @@ public class ShivaRobot {
     public Telemetry telemetry;
 
     /* Constructor */
-    public ShivaRobot() {}
+    public ShivaRobotAS() {}
 
     /* Initialize standard Hardware interfaces */
     public void init(Telemetry telemetry, HardwareMap hardwareMap) {
@@ -62,10 +60,10 @@ public class ShivaRobot {
         front_right = hardwareMap.get(DcMotor.class, "front_right");
 
         // Set Motors to not use encoders
-        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Slides motors
         //slides_motor = hardwareMap.get(DcMotor.class, "slides");

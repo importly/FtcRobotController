@@ -1,21 +1,17 @@
-package org.firstinspires.ftc.teamcode.navigation;
+package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import org.firstinspires.ftc.teamcode.ShivaRobot;
 
 /**
  * 1/20/21 - Manav Sanghvi
  * This class provides a high-level interface to the gyro.
  */
-public class Gyro {
+public class GyroAS {
     double globalAngle = 0;
     double secondAngle = 0;
     double thirdAngle = 0;
@@ -29,7 +25,7 @@ public class Gyro {
 
     BNO055IMU imu = null;
 
-    public void init(ShivaRobot robot)
+    public void init(ShivaRobotAS robot)
     {
         this.telemetry = robot.telemetry;
         this.imu = robot.imu;

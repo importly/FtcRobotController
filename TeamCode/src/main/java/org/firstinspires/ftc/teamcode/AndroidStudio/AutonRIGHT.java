@@ -19,30 +19,25 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.navigation.Gyro;
+import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
-import org.firstinspires.ftc.teamcode.vision.ScanAprilTagPipeline;
-import org.firstinspires.ftc.teamcode.navigation.DriveTrain;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "ScanAprilTagOpMode", group = "TEST")
-public class ScanAprilTagOpMode extends LinearOpMode
+@Autonomous(name = "Auton RIGHT", group = "Production")
+public class AutonRIGHT extends LinearOpMode
 {
     OpenCvCamera camera;
     ScanAprilTagPipeline scanAprilTagPipeline;
-
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -63,12 +58,16 @@ public class ScanAprilTagOpMode extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
-    ShivaRobot robot = new ShivaRobot();
+    ShivaRobotAS robot = new ShivaRobotAS();
+    DriveTrainAS driveTrain = new DriveTrainAS();
+    GyroAS gyro = new GyroAS();
 
     @Override
     public void runOpMode()
     {
         robot.init(telemetry, hardwareMap);
+        gyro.init(robot);
+        driveTrain.init(robot, gyro);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -163,6 +162,7 @@ public class ScanAprilTagOpMode extends LinearOpMode
             telemetry.update();
         }
 
+        pushCone();
         if(tagOfInterest == null){
             park(MIDDLE);
         }
@@ -171,50 +171,24 @@ public class ScanAprilTagOpMode extends LinearOpMode
         }
     }
 
+    void pushCone(){
+        driveTrain.strafe(1.2, 0.5);
+        driveTrain.move(1, 0.7);
+    }
+
     void park (int zone){
+        driveTrain.move(-1, 0.3);
         if(zone == LEFT){
-            robot.front_left.setPower(0.3);
-            robot.front_right.setPower(0.3);
-            robot.back_left.setPower(-0.3);
-            robot.back_right.setPower(-0.3);
-            sleep(1000);
-            robot.front_left.setPower(0.3);
-            robot.front_right.setPower(0.3);
-            robot.back_left.setPower(0.3);
-            robot.back_right.setPower(0.3);
-            sleep(500);
-            robot.front_left.setPower(0);
-            robot.front_right.setPower(0);
-            robot.back_left.setPower(0);
-            robot.back_right.setPower(0);
+            driveTrain.strafe(1.9, 0.3);
         }
         else if(zone == MIDDLE){
-            robot.front_left.setPower(0.3);
-            robot.front_right.setPower(0.3);
-            robot.back_left.setPower(0.3);
-            robot.back_right.setPower(0.3);
-            sleep(500);
-            robot.front_left.setPower(0);
-            robot.front_right.setPower(0);
-            robot.back_left.setPower(0);
-            robot.back_right.setPower(0);
+            driveTrain.strafe(-1, 0.3);
         }
         else if(zone == RIGHT){
-            robot.front_left.setPower(-0.3);
-            robot.front_right.setPower(-0.3);
-            robot.back_left.setPower(0.3);
-            robot.back_right.setPower(0.3);
-            sleep(1000);
-            robot.front_left.setPower(0.3);
-            robot.front_right.setPower(0.3);
-            robot.back_left.setPower(0.3);
-            robot.back_right.setPower(0.3);
-            sleep(500);
-            robot.front_left.setPower(0);
-            robot.front_right.setPower(0);
-            robot.back_left.setPower(0);
-            robot.back_right.setPower(0);
+            driveTrain.strafe(0.3, 0.3);
         }
+        driveTrain.move(1.2, 0.3);
+
     }
 
     void tagToTelemetry(AprilTagDetection detection)
