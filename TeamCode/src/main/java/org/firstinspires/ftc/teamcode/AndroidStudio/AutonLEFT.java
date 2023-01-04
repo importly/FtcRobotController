@@ -162,7 +162,7 @@ public class AutonLEFT extends LinearOpMode
             telemetry.update();
         }
 
-        pushCone();
+        //pushCone();
         if(tagOfInterest == null){
             park(MIDDLE);
         }
