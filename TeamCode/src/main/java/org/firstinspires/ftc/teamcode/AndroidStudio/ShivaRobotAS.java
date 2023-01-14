@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -25,10 +27,9 @@ public class ShivaRobotAS {
 
     // Slides motors
     public DcMotor slides_motor = null;
-    public DcMotor intake_spinner = null;
 
-    // Duck motors
-    public DcMotor duck_motor = null;
+    //Grip servo
+    public Servo grip_servo = null;
 
     // Gyro
     public BNO055IMU imu = null;
@@ -52,34 +53,25 @@ public class ShivaRobotAS {
     /* Initialize standard Hardware interfaces */
     public void init(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
-        
+
         // Wheel motors
         front_left = hardwareMap.get(DcMotor.class, "front_left");
         back_left = hardwareMap.get(DcMotor.class, "back_left");
         back_right = hardwareMap.get(DcMotor.class, "back_right");
         front_right = hardwareMap.get(DcMotor.class, "front_right");
 
+        slides_motor = hardwareMap.get(DcMotor.class, "slides_motor");
+
+        grip_servo = hardwareMap.get(Servo.class, "grip_servo");
+
         // Set Motors to not use encoders
-//        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Slides motors
-        //slides_motor = hardwareMap.get(DcMotor.class, "slides");
-
-         // Dead wheel encoders; set current position to 0,0
-         x_encoder = back_left;
-         y_encoder = front_left;
+        front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        front_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        back_right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Gyro
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        // Alliance Sensor
-        // It's recommended to use NormalizedColorSensor over ColorSensor, because
-        // NormalizedColorSensor consistently gives values between 0 and 1, while
-        // the values you get from ColorSensor are dependent on the specific sensor you're using.
-        //allianceColorSensor = hardwareMap.get(NormalizedColorSensor.class, "alliance_sensor");
 
         // Reverse the direction of the right side motors,
         // so power with the same sing (+ or -) causes the robot to move in the same direction,

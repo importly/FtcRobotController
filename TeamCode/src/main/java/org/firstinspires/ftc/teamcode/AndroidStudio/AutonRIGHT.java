@@ -23,13 +23,14 @@ package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 
 import java.util.ArrayList;
 
@@ -52,14 +53,15 @@ public class AutonRIGHT extends LinearOpMode
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    int RIGHT = 1;
+    int LEFT = 1;
     int MIDDLE = 2;
-    int LEFT = 3;
+    int RIGHT = 3;
 
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
     DriveTrainAS driveTrain = new DriveTrainAS();
+    SlidesAndGripAS slidesAndGripAS = new SlidesAndGripAS();
     GyroAS gyro = new GyroAS();
 
     @Override
@@ -67,7 +69,10 @@ public class AutonRIGHT extends LinearOpMode
     {
         robot.init(telemetry, hardwareMap);
         gyro.init(robot);
+        slidesAndGripAS.init(robot);
         driveTrain.init(robot, gyro);
+
+        slidesAndGripAS.closeGrip();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -162,33 +167,42 @@ public class AutonRIGHT extends LinearOpMode
             telemetry.update();
         }
 
-        pushCone();
         if(tagOfInterest == null){
+            //dropCone();
             park(MIDDLE);
         }
         else{
+            //dropCone();
             park(tagOfInterest.id);
         }
     }
 
-    void pushCone(){
-        driveTrain.strafe(1.2, 0.5);
-        driveTrain.move(1, 0.7);
+    void dropCone(){
+        slidesAndGripAS.moveSlides(-500);
+        driveTrain.strafe(1.2, 0.4);
+        slidesAndGripAS.moveSlides(-2500);
+        driveTrain.move(0.5, 0.4);
+        slidesAndGripAS.openGrip();
+        driveTrain.move(-0.5, 0.4);
+        slidesAndGripAS.moveSlides(0);
+        slidesAndGripAS.slides_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveTrain.strafe(-1.2, 0.4);
     }
 
     void park (int zone){
-        driveTrain.move(-1, 0.3);
+
         if(zone == LEFT){
-            driveTrain.strafe(1.9, 0.3);
+            driveTrain.strafe(-1.8, 0.7);
         }
         else if(zone == MIDDLE){
-            driveTrain.strafe(-1, 0.3);
+
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(0.3, 0.3);
-        }
-        driveTrain.move(1.2, 0.3);
+            driveTrain.strafe(1.9, 0.7);
 
+        }
+
+        driveTrain.move(2.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

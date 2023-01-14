@@ -23,6 +23,7 @@ package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
@@ -60,14 +61,18 @@ public class AutonLEFT extends LinearOpMode
 
     ShivaRobotAS robot = new ShivaRobotAS();
     DriveTrainAS driveTrain = new DriveTrainAS();
+    SlidesAndGripAS slidesAndGripAS = new SlidesAndGripAS();
     GyroAS gyro = new GyroAS();
 
     @Override
-    public void runOpMode()
+    public void runOpMode() throws InterruptedException
     {
         robot.init(telemetry, hardwareMap);
         gyro.init(robot);
+        slidesAndGripAS.init(robot);
         driveTrain.init(robot, gyro);
+
+        slidesAndGripAS.closeGrip();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -162,35 +167,44 @@ public class AutonLEFT extends LinearOpMode
             telemetry.update();
         }
 
-        //pushCone();
         if(tagOfInterest == null){
+            //dropCone();
             park(MIDDLE);
         }
         else{
+            //dropCone();
             park(tagOfInterest.id);
         }
     }
 
-    void pushCone(){
+    void dropCone() throws InterruptedException {
+        slidesAndGripAS.moveSlides(-500);
+        driveTrain.strafe(1.3, 0.2);
+        Thread.sleep(500);
+        slidesAndGripAS.moveSlides(-4000);
+        Thread.sleep(500);
+        driveTrain.move(0.4, 0.2);
+        Thread.sleep(500);
+        slidesAndGripAS.openGrip();
+        Thread.sleep(500);
+        driveTrain.move(-0.4, 0.2);
         driveTrain.strafe(-1.3, 0.2);
-        driveTrain.turn(90, 0.3);
-        driveTrain.strafe(-1.1, 0.3);
-        driveTrain.strafe(0.5, 0.3);
-        driveTrain.turn(0, 0.2);
     }
 
     void park (int zone){
+
         if(zone == LEFT){
-            driveTrain.strafe(-1.4, 0.3);
+            driveTrain.strafe(-1.8, 0.7);
         }
         else if(zone == MIDDLE){
-            driveTrain.strafe(0.2, 0.3);
-        }
-        else if(zone == RIGHT){
-            driveTrain.strafe(2.1, 0.3);
 
         }
-        driveTrain.move(2.1, 0.3);
+        else if(zone == RIGHT){
+            driveTrain.strafe(1.9, 0.7);
+
+        }
+
+        driveTrain.move(2.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)
