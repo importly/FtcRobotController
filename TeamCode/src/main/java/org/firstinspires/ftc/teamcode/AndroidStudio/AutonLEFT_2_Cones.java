@@ -23,19 +23,18 @@ package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton LEFT", group = "Production")
-public class AutonLEFT extends LinearOpMode
+@Autonomous(name = "Auton LEFT 2 Cones", group = "Production")
+public class AutonLEFT_2_Cones extends LinearOpMode
 {
     OpenCvCamera camera;
     ScanAprilTagPipeline scanAprilTagPipeline;
@@ -168,11 +167,11 @@ public class AutonLEFT extends LinearOpMode
 
         if(tagOfInterest == null){
             dropCone();
-            park(MIDDLE);
+            //park(MIDDLE);
         }
         else{
             dropCone();
-            park(tagOfInterest.id);
+            //park(tagOfInterest.id);
         }
     }
 
@@ -180,18 +179,19 @@ public class AutonLEFT extends LinearOpMode
         slidesAndGripAS.moveSlides(-200);
         slidesAndGripAS.closeGrip();
 
-        driveTrain.move(2.0, 0.3);
+        driveTrain.move(2.0, 0.6);
         slidesAndGripAS.moveSlides(-3500);
-        Thread.sleep(1000);
-        driveTrain.move(0.3, 0.1);
-        driveTrain.strafe(3.4, 0.3);
-        driveTrain.move(0.25, 0.1);
+        Thread.sleep(750);
+        driveTrain.move(0.3, 0.5);
+        driveTrain.strafe(3.4, 0.6);
+        driveTrain.move(0.25, 0.4);
         slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);
+        Thread.sleep(750);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.3, 0.1);
+        driveTrain.move(-0.3, 0.3);
         slidesAndGripAS.moveSlides(0);
-        Thread.sleep(1000);
+        Thread.sleep(750);
+        //driveTrain.strafe(-3.2, 0.7);
     }
 
     void park (int zone){

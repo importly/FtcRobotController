@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class SlidesAndGripAS {
 
-    private final int MAX_SLIDES_POSITION = 5316;
+    private final int MAX_SLIDES_POSITION = 4294;
     private final int MIN_SLIDES_POSITION = 0;
 
     public DcMotor slides_motor  = null;
