@@ -179,7 +179,6 @@ public class AutonLEFT extends LinearOpMode
     void dropCone() throws InterruptedException {
         slidesAndGripAS.moveSlides(-200);
         slidesAndGripAS.closeGrip();
-
         driveTrain.move(2.0, 0.3);
         slidesAndGripAS.moveSlides(-3500);
         Thread.sleep(1000);

@@ -44,6 +44,11 @@ public class SlidesAndGripAS {
         slides_motor.setPower(0.75);
     }
 
+    public void resetSlides(){
+        slides_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slides_motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void closeGrip(){
         grip_servo.setPosition(1);
     }

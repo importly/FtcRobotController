@@ -56,6 +56,7 @@ public class AutonLEFT_2_Cones extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
+    //int[] stackEncoderLevels = new int[]{};
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
@@ -165,50 +166,55 @@ public class AutonLEFT_2_Cones extends LinearOpMode
             telemetry.update();
         }
 
+        getInPosition();
+        dropCone();
+        pickupCone(1);
+        dropCone();
         if(tagOfInterest == null){
-            dropCone();
-            //park(MIDDLE);
+            park(MIDDLE);
         }
         else{
-            dropCone();
-            //park(tagOfInterest.id);
+            park(tagOfInterest.id);
         }
+    }
+
+    void getInPosition(){
+        //slidesAndGripAS.closeGrip();
+        driveTrain.move(4.1, 0.5);
     }
 
     void dropCone() throws InterruptedException {
-        slidesAndGripAS.moveSlides(-200);
-        slidesAndGripAS.closeGrip();
+        driveTrain.turn(40, 0.3);
+        //slidesAndGripAS.moveSlides(-3500);
+        driveTrain.move(0.3, 0.1);
+        //DROP STUFF
+        //slidesAndGripAS.moveSlides(-2000);
+        //slidesAndGripAS.openGrip();
+        driveTrain.move(-0.3, 0.1);
+    }
 
-        driveTrain.move(2.0, 0.6);
-        slidesAndGripAS.moveSlides(-3500);
-        Thread.sleep(750);
-        driveTrain.move(0.3, 0.5);
-        driveTrain.strafe(3.4, 0.6);
-        driveTrain.move(0.25, 0.4);
-        slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(750);
-        slidesAndGripAS.openGrip();
-        driveTrain.move(-0.3, 0.3);
-        slidesAndGripAS.moveSlides(0);
-        Thread.sleep(750);
-        //driveTrain.strafe(-3.2, 0.7);
+    void pickupCone(int stackLevel) throws InterruptedException{
+        driveTrain.turn(-90, 0.3);
+        //slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
+        driveTrain.move(1.7, 0.3); //INCREASE AT COMPETITION
+        //GRAB STUFF
+        //slidesAndGripAS.closeGrip();
+        //slidesAndGripAS.moveSlides(-2000);
+        driveTrain.move(-1.7, 0.3); // INCREASE AT COMPETITION
     }
 
     void park (int zone){
-
+        driveTrain.turn(-90, 0.5);
+        //slidesAndGripAS.moveSlides(0);
+        //slidesAndGripAS.resetSlides();
         if(zone == LEFT){
-            //driveTrain.strafe(-1.8, 0.7);
-            driveTrain.strafe(-5.8, 0.5);
+            driveTrain.move(2.1, 0.5);
         }
         else if(zone == MIDDLE){
-            driveTrain.strafe(-3.2, 0.7);
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(-0.8, 0.7);
-
+            driveTrain.move(-2.1, 0.7);
         }
-
-        //driveTrain.move(2.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

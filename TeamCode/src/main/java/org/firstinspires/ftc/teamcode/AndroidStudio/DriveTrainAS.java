@@ -41,15 +41,15 @@ public class DriveTrainAS {
     public void move(double rotationsToSpin, double power)
     {
         // Get the robot's current heading, and compute the number of ticks needed to move
-        //float startAngle = (float)gyro.getCurrentAngle();
+        float startAngle = (float)gyro.getCurrentAngle();
 
         // Compute how many ticks we need the dead wheel to spin
         int rotationsInTicks = (int) Math.round(ShivaRobotAS.MOTOR_TICKS_PER_360 * rotationsToSpin);
 
-            front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-            back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-            front_right.setDirection(DcMotorSimple.Direction.FORWARD);
-            back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
 
         setTargetPositions(rotationsInTicks);
         setModes(DcMotor.RunMode.RUN_TO_POSITION);
@@ -187,7 +187,7 @@ public class DriveTrainAS {
     }
 
     private void setZeroPowerBehavior() {
-        DcMotor.ZeroPowerBehavior zpb = DcMotor.ZeroPowerBehavior.FLOAT;
+        DcMotor.ZeroPowerBehavior zpb = DcMotor.ZeroPowerBehavior.BRAKE;
         front_left.setZeroPowerBehavior(zpb);
         back_left.setZeroPowerBehavior(zpb);
         front_right.setZeroPowerBehavior(zpb);
