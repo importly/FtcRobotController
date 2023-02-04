@@ -23,7 +23,7 @@ public class SlidesAndGripAS {
         grip_servo = robot.grip_servo;
 
         slides_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grip_servo.scaleRange(0.5, 1);
+        grip_servo.scaleRange(0, 1);
     }
 
     public void moveSlides(int position){
