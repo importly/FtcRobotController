@@ -33,8 +33,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton LEFT 1 Cone", group = "Production")
-public class AutonLEFT extends LinearOpMode
+@Autonomous(name = "Auton Right 2 Cones", group = "Production")
+public class AutonRIGHT_2_Cones extends LinearOpMode
 {
     OpenCvCamera camera;
     ScanAprilTagPipeline scanAprilTagPipeline;
@@ -168,6 +168,8 @@ public class AutonLEFT extends LinearOpMode
 
         getInPosition();
         dropCone();
+        pickupCone(4);
+        dropCone();
         if(tagOfInterest == null){
             park(MIDDLE);
         }
@@ -185,21 +187,21 @@ public class AutonLEFT extends LinearOpMode
     }
 
     void dropCone() throws InterruptedException {
-        driveTrain.turn(35, 0.3);
+        driveTrain.turn(-35, 0.3);
         slidesAndGripAS.moveSlides(-3250);
         Thread.sleep(1000);
-        driveTrain.move(0.84, 0.1);
+        driveTrain.move(0.9, 0.1);
         //DROP STUFF
         slidesAndGripAS.moveSlides(-2000);
         Thread.sleep(1000);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.8, 0.1);
+        driveTrain.move(-0.5, 0.1);
         slidesAndGripAS.moveSlides(0);
         Thread.sleep(1000);
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(-91, 0.3);
+        driveTrain.turn(91, 0.3);
         slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
         driveTrain.move(2.27, 0.2); //INCREASE AT COMPETITION
         //GRAB STUFF
@@ -212,16 +214,16 @@ public class AutonLEFT extends LinearOpMode
 
     void park (int zone){
         slidesAndGripAS.moveSlides(0);
+        slidesAndGripAS.resetSlides();
         driveTrain.turn(0, 0.5);
         if(zone == LEFT){
-            driveTrain.strafe(-1.93, 0.5);
+            driveTrain.strafe(1.4, 0.5);
         }
         else if(zone == MIDDLE){
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(1.93, 0.7);
+            driveTrain.strafe(-1.4, 0.7);
         }
-        driveTrain.move(-0.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

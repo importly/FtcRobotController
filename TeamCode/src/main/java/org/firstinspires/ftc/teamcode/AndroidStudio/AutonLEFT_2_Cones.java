@@ -215,13 +215,14 @@ public class AutonLEFT_2_Cones extends LinearOpMode
     void park (int zone){
         slidesAndGripAS.moveSlides(0);
         slidesAndGripAS.resetSlides();
+        driveTrain.turn(-90, 0.5);
         if(zone == LEFT){
-            driveTrain.move(2, 0.5);
+            driveTrain.move(1.4, 0.5);
         }
         else if(zone == MIDDLE){
         }
         else if(zone == RIGHT){
-            driveTrain.move(-2.25, 0.7);
+            driveTrain.move(-1.4, 0.7);
         }
         driveTrain.turn(0, 0.5);
     }

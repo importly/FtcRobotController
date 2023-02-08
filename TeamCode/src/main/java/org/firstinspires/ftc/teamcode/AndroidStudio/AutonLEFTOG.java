@@ -33,8 +33,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton LEFT 1 Cone", group = "Production")
-public class AutonLEFT extends LinearOpMode
+@Autonomous(name = "Auton LEFT ORIGINAL", group = "Production")
+public class AutonLEFTOG extends LinearOpMode
 {
     OpenCvCamera camera;
     ScanAprilTagPipeline scanAprilTagPipeline;
@@ -56,7 +56,6 @@ public class AutonLEFT extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
-    int[] stackEncoderLevels = new int[]{0, -150, -250, -350, -581};
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
@@ -166,62 +165,48 @@ public class AutonLEFT extends LinearOpMode
             telemetry.update();
         }
 
-        getInPosition();
-        dropCone();
         if(tagOfInterest == null){
+            dropCone();
             park(MIDDLE);
         }
         else{
+            dropCone();
             park(tagOfInterest.id);
         }
     }
 
-    void getInPosition() throws InterruptedException{
-        slidesAndGripAS.closeGrip();
-        Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-200);
-        driveTrain.move(4.4, 0.2);
-        driveTrain.move(-0.3, 0.2);
-    }
-
     void dropCone() throws InterruptedException {
-        driveTrain.turn(35, 0.3);
-        slidesAndGripAS.moveSlides(-3250);
+        slidesAndGripAS.moveSlides(-200);
+        slidesAndGripAS.closeGrip();
+        driveTrain.move(2.0, 0.3);
+        slidesAndGripAS.moveSlides(-3500);
         Thread.sleep(1000);
-        driveTrain.move(0.84, 0.1);
-        //DROP STUFF
+        driveTrain.move(0.3, 0.1);
+        driveTrain.strafe(3.4, 0.3);
+        driveTrain.move(0.25, 0.1);
         slidesAndGripAS.moveSlides(-2000);
         Thread.sleep(1000);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.8, 0.1);
+        driveTrain.move(-0.3, 0.1);
         slidesAndGripAS.moveSlides(0);
         Thread.sleep(1000);
     }
 
-    void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(-91, 0.3);
-        slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        driveTrain.move(2.27, 0.2); //INCREASE AT COMPETITION
-        //GRAB STUFF
-        slidesAndGripAS.closeGrip();
-        Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);;
-        driveTrain.move(-2.27, 0.2); // INCREASE AT COMPETITION
-    }
-
     void park (int zone){
-        slidesAndGripAS.moveSlides(0);
-        driveTrain.turn(0, 0.5);
+
         if(zone == LEFT){
-            driveTrain.strafe(-1.93, 0.5);
+            //driveTrain.strafe(-1.8, 0.7);
+            driveTrain.strafe(-5.8, 0.5);
         }
         else if(zone == MIDDLE){
+            driveTrain.strafe(-3.2, 0.7);
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(1.93, 0.7);
+            driveTrain.strafe(-0.8, 0.7);
+
         }
-        driveTrain.move(-0.4, 0.3);
+
+        //driveTrain.move(2.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

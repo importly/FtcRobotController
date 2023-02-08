@@ -23,18 +23,17 @@ package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.teamcode.AndroidStudio.vision.ScanAprilTagPipeline;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton RIGHT", group = "Production")
+@Autonomous(name = "Auton RIGHT 1 Cone", group = "Production")
 public class AutonRIGHT extends LinearOpMode
 {
     OpenCvCamera camera;
@@ -57,6 +56,7 @@ public class AutonRIGHT extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
+    int[] stackEncoderLevels = new int[]{0, -150, -250, -350, -581};
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
@@ -65,14 +65,13 @@ public class AutonRIGHT extends LinearOpMode
     GyroAS gyro = new GyroAS();
 
     @Override
-    public void runOpMode()
+    public void runOpMode() throws InterruptedException
     {
         robot.init(telemetry, hardwareMap);
         gyro.init(robot);
         slidesAndGripAS.init(robot);
         driveTrain.init(robot, gyro);
 
-        slidesAndGripAS.closeGrip();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -167,42 +166,62 @@ public class AutonRIGHT extends LinearOpMode
             telemetry.update();
         }
 
+        getInPosition();
+        dropCone();
         if(tagOfInterest == null){
-            //dropCone();
             park(MIDDLE);
         }
         else{
-            //dropCone();
             park(tagOfInterest.id);
         }
     }
 
-    void dropCone(){
-        slidesAndGripAS.moveSlides(-500);
-        driveTrain.strafe(1.2, 0.4);
-        slidesAndGripAS.moveSlides(-2500);
-        driveTrain.move(0.5, 0.4);
+    void getInPosition() throws InterruptedException{
+        slidesAndGripAS.closeGrip();
+        Thread.sleep(250);
+        slidesAndGripAS.moveSlides(-200);
+        driveTrain.move(4.4, 0.2);
+        driveTrain.move(-0.3, 0.2);
+    }
+
+    void dropCone() throws InterruptedException {
+        driveTrain.turn(-31, 0.3);
+        slidesAndGripAS.moveSlides(-3250);
+        Thread.sleep(1000);
+        driveTrain.move(0.7, 0.1);
+        //DROP STUFF
+        slidesAndGripAS.moveSlides(-2000);
+        Thread.sleep(1000);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.5, 0.4);
+        driveTrain.move(-0.8, 0.1);
         slidesAndGripAS.moveSlides(0);
-        slidesAndGripAS.slides_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrain.strafe(-1.2, 0.4);
+        Thread.sleep(1000);
+    }
+
+    void pickupCone(int stackLevel) throws InterruptedException{
+        driveTrain.turn(-91, 0.3);
+        slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
+        driveTrain.move(2.27, 0.2); //INCREASE AT COMPETITION
+        //GRAB STUFF
+        slidesAndGripAS.closeGrip();
+        Thread.sleep(250);
+        slidesAndGripAS.moveSlides(-2000);
+        Thread.sleep(1000);;
+        driveTrain.move(-2.27, 0.2); // INCREASE AT COMPETITION
     }
 
     void park (int zone){
-
+        slidesAndGripAS.moveSlides(0);
+        driveTrain.turn(-5, 0.5);
         if(zone == LEFT){
-            driveTrain.strafe(-1.8, 0.7);
+            driveTrain.strafe(-1.92, 0.5);
         }
         else if(zone == MIDDLE){
-
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(1.9, 0.7);
-
+            driveTrain.strafe(1.92, 0.7);
         }
-
-        driveTrain.move(2.4, 0.3);
+        driveTrain.move(-0.4, 0.3);
     }
 
     void tagToTelemetry(AprilTagDetection detection)
@@ -215,4 +234,4 @@ public class AutonRIGHT extends LinearOpMode
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
-}
+}// 18385-RC
