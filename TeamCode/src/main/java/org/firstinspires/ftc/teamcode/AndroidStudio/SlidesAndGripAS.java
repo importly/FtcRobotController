@@ -40,7 +40,7 @@ public class SlidesAndGripAS {
             clampedPos = position;
         }
 
-        slides_motor.setTargetPosition(clampedPos);
+        slides_motor.setTargetPosition( slides_motor.getCurrentPosition() + clampedPos);
         slides_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides_motor.setPower(0.75);
     }

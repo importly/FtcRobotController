@@ -183,7 +183,7 @@ public class AutonLEFT_2_Cones extends LinearOpMode
     void getInPosition() throws InterruptedException{
         slidesAndGripAS.closeGrip();
         Thread.sleep(125);
-        slidesAndGripAS.moveSlides(-200);
+        //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
         driveTrain.move(3.8, 0.3);
         //driveTrain.move(-0.4, 0.6);
     }
@@ -192,11 +192,11 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         driveTrain.turn(20, 0.2);
         driveTrain.turnWithDistanceSensor(42, 0.2, 1);
         driveTrain.turn((float)(gyro.getCurrentAngle() + 3), 0.2);
-        slidesAndGripAS.moveSlides(-5750);
+        slidesAndGripAS.moveSlides(-1000); //! relative now
         Thread.sleep(750);
         driveTrain.move(0.9, 0.2);
         //DROP STUFF
-        slidesAndGripAS.moveSlides(-2500);
+        slidesAndGripAS.moveSlides(+200); //! relative now
         Thread.sleep(500);
         slidesAndGripAS.openGrip();
         driveTrain.move(-0.6, 0.2);
