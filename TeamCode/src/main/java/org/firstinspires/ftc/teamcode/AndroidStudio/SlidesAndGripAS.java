@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class SlidesAndGripAS {
 
-    private final int MAX_SLIDES_POSITION = 4294;
+    private final int MAX_SLIDES_POSITION = 6000;
     private final int MIN_SLIDES_POSITION = 0;
 
     public DcMotor slides_motor  = null;
@@ -23,7 +23,8 @@ public class SlidesAndGripAS {
         grip_servo = robot.grip_servo;
 
         slides_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        grip_servo.scaleRange(0, 1);
+        grip_servo.setDirection(Servo.Direction.REVERSE);
+        grip_servo.scaleRange(0, 0.4);
     }
 
     public void moveSlides(int position){

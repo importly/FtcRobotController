@@ -26,31 +26,18 @@ public class DriveTrainTestAS extends LinearOpMode {
     gyro.init(robot);
     drivetrain.init(robot, gyro);
 
-    // Wait for the start button to be pressed.
-    //waitForStart();
-//
-//    // Drive the robot a short distance forward, backward, left, and right, and then turn 180 in each direction.
-    //drivetrain.move(1, 0.3);
-//    sleep(1000);
-//    drivetrain.move(-1, 0.3);
-//    sleep(1000);
-//    drivetrain.strafe(1, 0.3);
-//    sleep(1000);
-//    drivetrain.strafe(-1, 0.3);
-//    sleep(1000);
-//    drivetrain.turn(90, 0.3);
-//    sleep(1000);
-//    drivetrain.turn(-90, 0.3);
-
-    Rev2mDistanceSensor distance_sensor_right = hardwareMap.get(Rev2mDistanceSensor.class,"distance right");
-    Rev2mDistanceSensor distance_sensor_left = hardwareMap.get(Rev2mDistanceSensor.class,"distance left");
-
-    while (opModeIsActive()) {
-      telemetry.addData(distance_sensor_right.getDeviceName(), distance_sensor_right.getDistance(DistanceUnit.CM));
-      telemetry.addData(distance_sensor_left.getDeviceName(), distance_sensor_left.getDistance(DistanceUnit.CM));
+    while (!isStarted() && !isStopRequested()){
+      telemetry.addData("Current Distance: ", robot.distance_sensor.getDistance(DistanceUnit.CM));
 
       telemetry.update();
+    }
 
+    drivetrain.turnWithDistanceSensor(25, 0.5, 1);
+
+    while (opModeIsActive()) {
+      telemetry.addData(robot.distance_sensor.getDeviceName(), robot.distance_sensor.getDistance(DistanceUnit.CM));
+
+      telemetry.update();
     }
   }
 }

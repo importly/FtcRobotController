@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.AndroidStudio;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,6 +25,8 @@ public class ShivaRobotAS {
     // Dead wheel encoders
     public DcMotor x_encoder = null;
     public DcMotor y_encoder = null;
+
+    public Rev2mDistanceSensor distance_sensor = null;
 
     // Slides motors
     public DcMotor slides_motor = null;
@@ -63,6 +66,9 @@ public class ShivaRobotAS {
         slides_motor = hardwareMap.get(DcMotor.class, "slides_motor");
 
         grip_servo = hardwareMap.get(Servo.class, "grip_servo");
+
+        distance_sensor = hardwareMap.get(Rev2mDistanceSensor.class,"fds");
+
 
         // Set Motors to not use encoders
         front_left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

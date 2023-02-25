@@ -56,7 +56,7 @@ public class AutonLEFT_2_Cones extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
-    int[] stackEncoderLevels = new int[]{0, -150, -250, -350, -581};
+    int[] stackEncoderLevels = new int[]{0, -113, -225, -338, -450};
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
@@ -170,6 +170,8 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         dropCone();
         pickupCone(4);
         dropCone();
+        //pickupCone(3);
+        //dropCone();
         if(tagOfInterest == null){
             park(MIDDLE);
         }
@@ -180,48 +182,56 @@ public class AutonLEFT_2_Cones extends LinearOpMode
 
     void getInPosition() throws InterruptedException{
         slidesAndGripAS.closeGrip();
-        Thread.sleep(250);
+        Thread.sleep(125);
         slidesAndGripAS.moveSlides(-200);
-        driveTrain.move(4.4, 0.2);
-        driveTrain.move(-0.3, 0.2);
+        driveTrain.move(3.8, 0.3);
+        //driveTrain.move(-0.4, 0.6);
     }
 
     void dropCone() throws InterruptedException {
-        driveTrain.turn(35, 0.3);
-        slidesAndGripAS.moveSlides(-3250);
-        Thread.sleep(1000);
-        driveTrain.move(0.9, 0.1);
+        driveTrain.turn(20, 0.2);
+        driveTrain.turnWithDistanceSensor(42, 0.2, 1);
+        driveTrain.turn((float)(gyro.getCurrentAngle() + 3), 0.2);
+        slidesAndGripAS.moveSlides(-5750);
+        Thread.sleep(750);
+        driveTrain.move(0.9, 0.2);
         //DROP STUFF
-        slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);
+        slidesAndGripAS.moveSlides(-2500);
+        Thread.sleep(500);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.5, 0.1);
+        driveTrain.move(-0.6, 0.2);
+        slidesAndGripAS.closeGrip();
         slidesAndGripAS.moveSlides(0);
-        Thread.sleep(1000);
+        slidesAndGripAS.resetSlides();
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(-91, 0.3);
+        driveTrain.turn(-90, 0.2);
+        //driveTrain.turnWithDistanceSensor(70, 0.3, 2);
+        //driveTrain.strafeWithDistanceSensor(70, 0.3);
         slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        driveTrain.move(2.27, 0.2); //INCREASE AT COMPETITION
+        //driveTrain.move(0.5,0.7);
+        driveTrain.moveWithDistanceSensor(25, 0.2); //INCREASE AT COMPETITION
         //GRAB STUFF
         slidesAndGripAS.closeGrip();
         Thread.sleep(250);
         slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);;
-        driveTrain.move(-2.27, 0.2); // INCREASE AT COMPETITION
+        Thread.sleep(1000);
+        driveTrain.move(-1.3, 0.2); // INCREASE AT COMPETITION
     }
 
     void park (int zone){
-        slidesAndGripAS.moveSlides(0);
-        slidesAndGripAS.resetSlides();
-        driveTrain.turn(-90, 0.5);
+        //slidesAndGripAS.moveSlides(0);
+        //slidesAndGripAS.resetSlides();
+
         if(zone == LEFT){
+            driveTrain.turn(-90, 0.5);
             driveTrain.move(1.4, 0.5);
         }
         else if(zone == MIDDLE){
         }
         else if(zone == RIGHT){
+            driveTrain.turn(-90, 0.5);
             driveTrain.move(-1.4, 0.7);
         }
         driveTrain.turn(0, 0.5);

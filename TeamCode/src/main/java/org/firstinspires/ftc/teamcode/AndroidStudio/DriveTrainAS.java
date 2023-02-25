@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.AndroidStudio;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Provides low-level autonomous movement functionality for the robot
@@ -17,7 +19,9 @@ public class DriveTrainAS {
     private DcMotor front_right = null;
     private DcMotor back_left   = null;
     private DcMotor back_right  = null;
-    
+
+    private Rev2mDistanceSensor distance_sensor = null;
+
     private static final float AMPLIFIER = 0.02f;
     
     public void init(ShivaRobotAS robot, GyroAS newGyro)
@@ -30,6 +34,8 @@ public class DriveTrainAS {
         front_right = robot.front_right;
         back_left   = robot.back_left;
         back_right  = robot.back_right;
+
+        distance_sensor = robot.distance_sensor;
 
         stop();
         setZeroPowerBehavior();
@@ -74,10 +80,10 @@ public class DriveTrainAS {
     {
         int rotationsInTicks = (int) Math.round(ShivaRobotAS.MOTOR_TICKS_PER_360 * rotationsToSpin);
 
-            front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-            back_left.setDirection(DcMotorSimple.Direction.FORWARD);
-            front_right.setDirection(DcMotorSimple.Direction.REVERSE);
-            back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
 
         setTargetPositions(rotationsInTicks);
         setModes(DcMotor.RunMode.RUN_TO_POSITION);
@@ -131,6 +137,77 @@ public class DriveTrainAS {
             }
         }
         
+        stop();
+        setModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void turnWithDistanceSensor(double distanceToLookFor, double power, int direction)
+    {
+        setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(direction == 1) //Clockwise
+        {
+            front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        else if (direction == 2) //Counter Clockwise
+        {
+            front_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        startMovement(power);
+        while(distance_sensor.getDistance(DistanceUnit.CM) > distanceToLookFor)
+        {
+            telemetry.addData("Distance To Look Form", distanceToLookFor + " cm");
+            telemetry.addData("Current Distance Seen", distance_sensor.getDistance(DistanceUnit.CM) + " cm");
+            telemetry.update();
+        }
+
+        stop();
+        setModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void moveWithDistanceSensor(double distanceToLookFor, double power)
+    {
+        setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        startMovement(power);
+        while(distance_sensor.getDistance(DistanceUnit.CM) > distanceToLookFor)
+        {
+            telemetry.addData("Distance To Look Form", distanceToLookFor + " cm");
+            telemetry.addData("Current Distance Seen", distance_sensor.getDistance(DistanceUnit.CM) + " cm");
+            telemetry.update();
+        }
+
+        stop();
+        setModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void strafeWithDistanceSensor(double distanceToLookFor, double power)
+    {
+        setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        startMovement(power);
+        while(distance_sensor.getDistance(DistanceUnit.CM) > distanceToLookFor)
+        {
+            telemetry.addData("Distance To Look Form", distanceToLookFor + " cm");
+            telemetry.addData("Current Distance Seen", distance_sensor.getDistance(DistanceUnit.CM) + " cm");
+            telemetry.update();
+        }
+
         stop();
         setModes(DcMotor.RunMode.RUN_USING_ENCODER);
     }
