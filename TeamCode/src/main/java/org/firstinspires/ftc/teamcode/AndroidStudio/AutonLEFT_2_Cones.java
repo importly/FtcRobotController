@@ -184,40 +184,38 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         slidesAndGripAS.closeGrip();
         Thread.sleep(125);
         //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
-        driveTrain.move(3.8, 0.3);
-        //driveTrain.move(-0.4, 0.6);
+        driveTrain.move(4.5, 0.3);
+        driveTrain.move(-0.5, 0.3);
     }
 
     void dropCone() throws InterruptedException {
-        driveTrain.turn(20, 0.2);
+        driveTrain.turn(20, 0.4);
         driveTrain.turnWithDistanceSensor(42, 0.2, 1);
-        driveTrain.turn((float)(gyro.getCurrentAngle() + 3), 0.2);
-        slidesAndGripAS.moveSlides(-1000); //! relative now
+        //driveTrain.turn((float)(gyro.getCurrentAngle() + 2), 0.2);
+        slidesAndGripAS.moveSlides(-5600); //! relative now
         Thread.sleep(750);
         driveTrain.move(0.9, 0.2);
         //DROP STUFF
-        slidesAndGripAS.moveSlides(+200); //! relative now
+        slidesAndGripAS.moveSlides(-300); //! relative now
         Thread.sleep(500);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.6, 0.2);
+        driveTrain.move(-0.4, 0.2);
         slidesAndGripAS.closeGrip();
         slidesAndGripAS.moveSlides(0);
-        slidesAndGripAS.resetSlides();
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(-90, 0.2);
-        //driveTrain.turnWithDistanceSensor(70, 0.3, 2);
-        //driveTrain.strafeWithDistanceSensor(70, 0.3);
+        driveTrain.turn(-88, 0.5);
+        //driveTrain.turn(-88, 0.4);
+        slidesAndGripAS.openGrip();
+        driveTrain.moveWithDistanceSensor(30, 0.2);
         slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        //driveTrain.move(0.5,0.7);
-        driveTrain.moveWithDistanceSensor(25, 0.2); //INCREASE AT COMPETITION
-        //GRAB STUFF
+        driveTrain.move(0.6, 0.2);
         slidesAndGripAS.closeGrip();
         Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-2000);
+        slidesAndGripAS.moveSlides(-1250);
         Thread.sleep(1000);
-        driveTrain.move(-1.3, 0.2); // INCREASE AT COMPETITION
+        driveTrain.move(-1.8, 0.2);
     }
 
     void park (int zone){

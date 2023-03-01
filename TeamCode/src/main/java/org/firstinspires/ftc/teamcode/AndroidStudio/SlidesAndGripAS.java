@@ -28,19 +28,7 @@ public class SlidesAndGripAS {
     }
 
     public void moveSlides(int position){
-        int clampedPos;
-
-        if(position < -MAX_SLIDES_POSITION){
-            clampedPos = -MAX_SLIDES_POSITION;
-        }
-        else if(position > MIN_SLIDES_POSITION){
-            clampedPos = MIN_SLIDES_POSITION;
-        }
-        else{
-            clampedPos = position;
-        }
-
-        slides_motor.setTargetPosition( slides_motor.getCurrentPosition() + clampedPos);
+        slides_motor.setTargetPosition(position);
         slides_motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides_motor.setPower(0.75);
     }
