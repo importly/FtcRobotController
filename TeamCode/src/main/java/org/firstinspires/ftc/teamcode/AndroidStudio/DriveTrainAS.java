@@ -108,7 +108,7 @@ public class DriveTrainAS {
     public void turn(float compassPoint, double power)
     {
 		// use recursion to implement bounce-back approach if turn is more than 45 degrees
-		if (angularDifference(gyro.getCurrentAngle(), compassPoint) > 45.0 && abs(power) != 1.0) {
+		if (angularDifference(gyro.getCurrentAngle(), compassPoint) > 45.0 && Math.abs(power) != 1.0) {
 			turn(compassPoint, power < 0 ? -1.0 : 1.0);
 		}
 		
