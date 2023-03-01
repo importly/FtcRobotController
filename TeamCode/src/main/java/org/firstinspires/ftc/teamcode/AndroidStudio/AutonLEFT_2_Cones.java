@@ -167,11 +167,11 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         }
 
         getInPosition();
-        dropCone();
-        pickupCone(4);
-        dropCone();
-        //pickupCone(3);
-        //dropCone();
+        dropCone(0);
+        for (int i = 2; i > 0; i--) {
+            pickupCone(i + 2);
+            dropCone(i + 2);
+        }
         if(tagOfInterest == null){
             park(MIDDLE);
         }
@@ -184,38 +184,45 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         slidesAndGripAS.closeGrip();
         Thread.sleep(125);
         //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
-        driveTrain.move(4.5, 0.3);
-        driveTrain.move(-0.5, 0.3);
+        driveTrain.move(4.6, 0.5);
+        Thread.sleep(85);
+        driveTrain.move(-0.6, 0.4);
     }
 
-    void dropCone() throws InterruptedException {
+    void dropCone(int coneLevel) throws InterruptedException {
         driveTrain.turn(20, 0.4);
         driveTrain.turnWithDistanceSensor(42, 0.2, 1);
-        //driveTrain.turn((float)(gyro.getCurrentAngle() + 2), 0.2);
+        driveTrain.turn((float)(gyro.getCurrentAngle() + 1.8), 0.2);
         slidesAndGripAS.moveSlides(-5600); //! relative now
         Thread.sleep(750);
-        driveTrain.move(0.9, 0.2);
+        driveTrain.move(1, 0.2);
+        Thread.sleep(250);
         //DROP STUFF
         slidesAndGripAS.moveSlides(-300); //! relative now
         Thread.sleep(500);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.4, 0.2);
+        if(coneLevel == 3){
+            driveTrain.move(-0.7, 0.2);
+        }
+        else{
+            driveTrain.move(-0.5, 0.2);
+        }
         slidesAndGripAS.closeGrip();
         slidesAndGripAS.moveSlides(0);
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(-88, 0.5);
+        driveTrain.turn(-90, 0.5);
         //driveTrain.turn(-88, 0.4);
         slidesAndGripAS.openGrip();
-        driveTrain.moveWithDistanceSensor(30, 0.2);
+        driveTrain.moveWithDistanceSensor(30, 0.27);
         slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        driveTrain.move(0.6, 0.2);
+        driveTrain.move(0.67, 0.2);
         slidesAndGripAS.closeGrip();
         Thread.sleep(250);
         slidesAndGripAS.moveSlides(-1250);
         Thread.sleep(1000);
-        driveTrain.move(-1.8, 0.2);
+        driveTrain.move(-1.6, 0.27);
     }
 
     void park (int zone){
