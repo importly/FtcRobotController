@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import java.lang.Math;
+import java.util.Arrays;
 
 /**
  * Provides low-level autonomous movement functionality for the robot
@@ -25,7 +25,7 @@ public class DriveTrainAS {
     private Rev2mDistanceSensor distance_sensor = null;
 
     private static final float AMPLIFIER = 0.02f;
-    
+
     public void init(ShivaRobotAS robot, GyroAS newGyro)
     {
         // Save values as instance variables
@@ -42,7 +42,7 @@ public class DriveTrainAS {
         stop();
         setZeroPowerBehavior();
     }
-    
+
     // Move the robot forward the specified rotations, at the specified power
     // Power must be a value from -1.0 to 1.0
     // The gyro is used to help the robot drive straight
@@ -90,7 +90,7 @@ public class DriveTrainAS {
         setTargetPositions(rotationsInTicks);
         setModes(DcMotor.RunMode.RUN_TO_POSITION);
         startMovement(power);
-        
+
         // Wait for the robot to reach its destination
         while(front_right.isBusy())
         {
@@ -101,115 +101,46 @@ public class DriveTrainAS {
 
         stop();
     }
-    
+
     // Turn the robot to the specified compass point, using a spin turn
     // compassPoint must be a value from -180.0 to 180.0
     // power must be a value from -1.0 to 1.0
     public void turn(float compassPoint, double power)
     {
-		// use recursion to implement bounce-back approach if turn is more than 45 degrees
-		if (angularDifference(gyro.getCurrentAngle(), compassPoint) > 45.0 && Math.abs(power) != 1.0) {
-			turn(compassPoint, power < 0 ? -1.0 : 1.0);
-		}
-		
-		// don't do the slow turn if we miraculously are already at the target angle
-		if (gyro.getCurrentAngle() != compassPoint) {
-			setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-			if (gyro.isClockwise(compassPoint))
-			{
-				front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-				back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-				front_right.setDirection(DcMotorSimple.Direction.REVERSE);
-				back_right.setDirection(DcMotorSimple.Direction.REVERSE);
-					
-				startMovement(power);
-				while(gyro.getCurrentAngle() < compassPoint)
-				{
-					telemetry.addData("Gyro Target Angle: ", compassPoint);
-					telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());   
-					telemetry.update();         
-				}
-			}
-			else if (!gyro.isClockwise(compassPoint))
-			{
-				front_left.setDirection(DcMotorSimple.Direction.FORWARD);
-				back_left.setDirection(DcMotorSimple.Direction.FORWARD);
-				front_right.setDirection(DcMotorSimple.Direction.FORWARD);
-				back_right.setDirection(DcMotorSimple.Direction.FORWARD);
-					
-				startMovement(power);
-				while(gyro.getCurrentAngle() > compassPoint)
-				{
-					telemetry.addData("Gyro Target Angle: ", compassPoint);
-					telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());   
-					telemetry.update();
-				}
-			}
-			
-			stop();
-			setModes(DcMotor.RunMode.RUN_USING_ENCODER);
-		}
-    }
-    
-    // Turn the robot to the specified compass point, using a spin turn
-    // compassPoint must be a value from -180.0 to 180.0
-    // power must be a value from -1.0 to 1.0
-	//
-	// With a Proportional Turn, the power applied to the motors decreases as the robot nears the target compassPoint.
-	// This way, the robot will turn quickly when there is a long distance to turn, but slowly when we are near the end,
-	// so the effect should be a pretty quick turn without having to resort to doing a bounce-back.
-	// In this variation, the power argument is the minimum power used (too low a value may perhaps cause the robot to stall and stop moving)
-    public void proportionalTurn(float compassPoint, double minPower)
-    {
-		// don't do the turn if we miraculously are already at the target angle
-		if (gyro.getCurrentAngle() != compassPoint) {
-			setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-			if (gyro.isClockwise(compassPoint))
-			{
-				front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-				back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-				front_right.setDirection(DcMotorSimple.Direction.REVERSE);
-				back_right.setDirection(DcMotorSimple.Direction.REVERSE);
-				
-				float currentAngle = gyro.getCurrentAngle();
-				double currentPower = setProportionalPower(minPower, currentAngle, compassPoint);
-				while(currentAngle < compassPoint)
-				{
-					telemetry.addData("Gyro Target Angle: ", compassPoint);
-					telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());   
-					telemetry.update();
-					
-					currentAngle = gyro.getCurrentAngle();
-					if (currentPower > minPower) {
-						currentPower = setProportionalPower(minPower, currentAngle, compassPoint);
-					}
-				}
-			}
-			else if (!gyro.isClockwise(compassPoint))
-			{
-				front_left.setDirection(DcMotorSimple.Direction.FORWARD);
-				back_left.setDirection(DcMotorSimple.Direction.FORWARD);
-				front_right.setDirection(DcMotorSimple.Direction.FORWARD);
-				back_right.setDirection(DcMotorSimple.Direction.FORWARD);
-					
-				float currentAngle = gyro.getCurrentAngle();
-				double currentPower = setProportionalPower(minPower, currentAngle, compassPoint);
-				while(currentAngle > compassPoint)
-				{
-					telemetry.addData("Gyro Target Angle: ", compassPoint);
-					telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());   
-					telemetry.update();
-					
-					currentAngle = gyro.getCurrentAngle();
-					if (currentPower > minPower) {
-						currentPower = setProportionalPower(minPower, currentAngle, compassPoint);
-					}
-				}
-			}
-			
-			stop();
-			setModes(DcMotor.RunMode.RUN_USING_ENCODER);
-		}
+        setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (gyro.isClockwise(compassPoint))
+        {
+            front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+            startMovement(power);
+            while(gyro.getCurrentAngle() < compassPoint)
+            {
+                telemetry.addData("Gyro Target Angle: ", compassPoint);
+                telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());
+                telemetry.update();
+            }
+        }
+        else if (!gyro.isClockwise(compassPoint))
+        {
+            front_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            startMovement(power);
+            while(gyro.getCurrentAngle() > compassPoint)
+            {
+                telemetry.addData("Gyro Target Angle: ", compassPoint);
+                telemetry.addData("Gyro Current Angle: ", gyro.getCurrentAngle());
+                telemetry.update();
+            }
+        }
+
+        stop();
+        setModes(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void turnWithDistanceSensor(double distanceToLookFor, double power, int direction)
@@ -239,6 +170,52 @@ public class DriveTrainAS {
 
         stop();
         setModes(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void turnWithDistanceSensorDelta(float maximumDegrees, double power, int direction)
+    {
+        float startingAngle = (float)gyro.getCurrentAngle();
+        setModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(direction == 1) //Clockwise
+        {
+            front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+            front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+            back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        else if (direction == 2) //Counter Clockwise
+        {
+            front_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_left.setDirection(DcMotorSimple.Direction.FORWARD);
+            front_right.setDirection(DcMotorSimple.Direction.FORWARD);
+            back_right.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        double[] distances = new double[(int)maximumDegrees/2];
+        float[] degrees = new float[(int)maximumDegrees/2];
+        distances[0] = distance_sensor.getDistance(DistanceUnit.CM);
+        degrees[0] = startingAngle;
+
+        startMovement(power);
+        int i = 1;
+
+        while (Math.abs(startingAngle - gyro.getCurrentAngle()) <= maximumDegrees){
+            if(Math.abs(degrees[i-1] - gyro.getCurrentAngle()) > 2){
+                distances[i] = distance_sensor.getDistance(DistanceUnit.CM);
+                degrees[i] = (float)gyro.getCurrentAngle();
+                i++;
+            }
+            else{
+            }
+            telemetry.addData("Current Index", i);
+            telemetry.addData("Difference", Math.abs(degrees[i-1] - gyro.getCurrentAngle()));
+            telemetry.addData("Current Distance", distances[i]);
+            telemetry.addData("Degrees", degrees[i]);
+            telemetry.update();
+        }
+
+        stop();
+        setModes(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        turn((float)degrees[indexOfSmallest(distances)], 0.3);
     }
 
     public void moveWithDistanceSensor(double distanceToLookFor, double power)
@@ -292,29 +269,10 @@ public class DriveTrainAS {
 
         setModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        telemetry.addData("Status: ", "Stopped");
-        telemetry.update();
+        //telemetry.addData("Status: ", "Stopped");
+        //telemetry.update();
     }
-	
-	// Return the difference between the two angles, as a positive number
-	private float angularDifference(float currentAngle, float compassPoint) {
-		return Math.abs(currentAngle - compassPoint);
-	}
-	
-	// compute the appropriate power to use, based on the remaining angle left to turn
-	// set the motors to that power and return the result
-	private double setProportionalPower(double minPower, float currentAngle, float compassPoint) {
-		double result = 1.0;
-		
-		float distanceRemaining = angularDifference(currentAngle, compassPoint);
-		if (distanceRemaining <= 45.0) {
-			result = Math.max(distanceRemaining / 45.0, minPower);
-		}
-		
-		startMovement(result);
-		return result;
-	}
-    
+
     // Move the robot the specified rotations, at the specified power
     // Power must be a value from -1.0 to 1.0
     // The direction to move must be set before calling this method
@@ -324,13 +282,13 @@ public class DriveTrainAS {
         back_left.setPower((float)power);
         front_right.setPower((float)power);
         back_right.setPower((float)power);
-    }   
-    
+    }
+
     // Adjust the power to the wheels, based on the current gyro reading, in case the robot drifts off course
     private void adjust(float angle, float basePower)
     {
         float powerChange = Math.abs(angle * AMPLIFIER);
-        
+
         if(angle > 0)
         {
             front_left.setPower(basePower + powerChange);
@@ -346,7 +304,7 @@ public class DriveTrainAS {
             back_right.setPower(basePower + powerChange);
         }
     }
-    
+
     public float getCorrectionAngle(float startAngle)
     {
         float correctionAngle = startAngle - (float)gyro.getCurrentAngle();
@@ -373,5 +331,17 @@ public class DriveTrainAS {
         back_left.setTargetPosition(targetPosition);
         front_right.setTargetPosition(targetPosition);
         back_right.setTargetPosition(targetPosition);
+    }
+    public static int indexOfSmallest(double[] array){
+        int index = 0;
+        double min = array[index];
+
+        for (int i = 1; i < array.length; i++){
+            if (array[i] <= min){
+                min = array[i];
+                index = i;
+            }
+        }
+        return index;
     }
 }

@@ -33,8 +33,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton LEFT 2 Cones", group = "Production")
-public class AutonLEFT_2_Cones extends LinearOpMode
+@Autonomous(name = "DistanceDeltaTest", group = "Production")
+public class DistanceDeltaTest extends LinearOpMode
 {
     OpenCvCamera camera;
     ScanAprilTagPipeline scanAprilTagPipeline;
@@ -168,22 +168,11 @@ public class AutonLEFT_2_Cones extends LinearOpMode
             telemetry.update();
         }
 
-        getInPosition();
-        dropCone(0);
         pickupCone(4);
-        dropCone(4);
-        if(tagOfInterest == null){
-            park(MIDDLE);
-        }
-        else{
-            park(tagOfInterest.id);
-        }
     }
 
     void getInPosition() throws InterruptedException{
-        slidesAndGripAS.closeGrip();
         Thread.sleep(125);
-        //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
         driveTrain.move(4.6, 0.5);
         Thread.sleep(85);
         driveTrain.move(-0.6, 0.4);
@@ -193,40 +182,19 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         driveTrain.turn(20, 0.4);
         driveTrain.turnWithDistanceSensor(42, 0.2, 1);
         driveTrain.turn((float)(gyro.getCurrentAngle() + 1.8), 0.2);
-        slidesAndGripAS.moveSlides(-5600); //! relative now
-        Thread.sleep(750);
         driveTrain.move(1, 0.2);
-        Thread.sleep(250);
         //DROP STUFF
-        slidesAndGripAS.moveSlides(-300); //! relative now
-        Thread.sleep(500);
-        slidesAndGripAS.openGrip();
         if(coneLevel == 3){
             driveTrain.move(-1, 0.2);
         }
         else{
             driveTrain.move(-0.5, 0.2);
         }
-        slidesAndGripAS.closeGrip();
-        slidesAndGripAS.moveSlides(0);
-
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        if(stackLevel == 3){
-            driveTrain.turn(-95,0.5);
-        }else{
-            driveTrain.turn(-90, 0.5);
-        }
-        slidesAndGripAS.openGrip();
-        driveTrain.moveWithDistanceSensor(30, 0.27);
-        slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        driveTrain.move(0.67, 0.2);
-        slidesAndGripAS.closeGrip();
-        Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-1250);
-        Thread.sleep(1000);
-        driveTrain.move(-1.6, 0.27);
+        //driveTrain.turn(-70, 0.3);
+        driveTrain.turnWithDistanceSensorDelta(90, 0.3, 2);
     }
 
     void park (int zone){
@@ -245,12 +213,6 @@ public class AutonLEFT_2_Cones extends LinearOpMode
 
     void tagToTelemetry(AprilTagDetection detection)
     {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+
     }
 }// 18385-RC
