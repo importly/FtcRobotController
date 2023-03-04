@@ -33,7 +33,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Auton Right 2 Cones", group = "Production")
+@Autonomous(name = "Auton RIGHT 2 Cones", group = "Production")
 public class AutonRIGHT_2_Cones extends LinearOpMode
 {
     OpenCvCamera camera;
@@ -56,7 +56,7 @@ public class AutonRIGHT_2_Cones extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
-    int[] stackEncoderLevels = new int[]{0, -150, -250, -350, -581};
+    int[] stackEncoderLevels = new int[]{0, -113, -225, -338, -450};
     AprilTagDetection tagOfInterest = null;
 
     ShivaRobotAS robot = new ShivaRobotAS();
@@ -71,6 +71,8 @@ public class AutonRIGHT_2_Cones extends LinearOpMode
         gyro.init(robot);
         slidesAndGripAS.init(robot);
         driveTrain.init(robot, gyro);
+
+        slidesAndGripAS.resetSlides();
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -167,9 +169,9 @@ public class AutonRIGHT_2_Cones extends LinearOpMode
         }
 
         getInPosition();
-        dropCone();
+        dropCone(0);
         pickupCone(4);
-        dropCone();
+        dropCone(4);
         if(tagOfInterest == null){
             park(MIDDLE);
         }
@@ -180,50 +182,65 @@ public class AutonRIGHT_2_Cones extends LinearOpMode
 
     void getInPosition() throws InterruptedException{
         slidesAndGripAS.closeGrip();
-        Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-200);
-        driveTrain.move(4.4, 0.2);
-        driveTrain.move(-0.3, 0.2);
+        Thread.sleep(125);
+        //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
+        driveTrain.move(4.6, 0.5);
+        Thread.sleep(85);
+        driveTrain.move(-0.6, 0.4);
     }
 
-    void dropCone() throws InterruptedException {
-        driveTrain.turn(-35, 0.3);
-        slidesAndGripAS.moveSlides(-3250);
-        Thread.sleep(1000);
-        driveTrain.move(0.9, 0.1);
+    void dropCone(int coneLevel) throws InterruptedException {
+        driveTrain.turn(-20, 0.4);
+        driveTrain.turnWithDistanceSensor(42, 0.2, 2);
+        driveTrain.turn((float)(gyro.getCurrentAngle() - 1.8), 0.2);
+        slidesAndGripAS.moveSlides(-5600); //! relative now
+        Thread.sleep(750);
+        driveTrain.move(1, 0.2);
+        Thread.sleep(250);
         //DROP STUFF
-        slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);
+        slidesAndGripAS.moveSlides(-300); //! relative now
+        Thread.sleep(500);
         slidesAndGripAS.openGrip();
-        driveTrain.move(-0.5, 0.1);
+        if(coneLevel == 3){
+            driveTrain.move(-1, 0.2);
+        }
+        else{
+            driveTrain.move(-0.5, 0.2);
+        }
+        slidesAndGripAS.closeGrip();
         slidesAndGripAS.moveSlides(0);
-        Thread.sleep(1000);
+
     }
 
     void pickupCone(int stackLevel) throws InterruptedException{
-        driveTrain.turn(91, 0.3);
+        if(stackLevel == 3){
+            driveTrain.turn(95,0.5);
+        }else{
+            driveTrain.turn(84, 0.3);
+        }
+        slidesAndGripAS.openGrip();
+        driveTrain.moveWithDistanceSensor(30, 0.27);
         slidesAndGripAS.moveSlides(stackEncoderLevels[stackLevel]);
-        driveTrain.move(2.27, 0.2); //INCREASE AT COMPETITION
-        //GRAB STUFF
+        driveTrain.move(0.67, 0.2);
         slidesAndGripAS.closeGrip();
         Thread.sleep(250);
-        slidesAndGripAS.moveSlides(-2000);
-        Thread.sleep(1000);;
-        driveTrain.move(-2.27, 0.2); // INCREASE AT COMPETITION
+        slidesAndGripAS.moveSlides(-1250);
+        Thread.sleep(1000);
+        driveTrain.move(-1.6, 0.27);
     }
 
     void park (int zone){
-        slidesAndGripAS.moveSlides(0);
-        slidesAndGripAS.resetSlides();
-        driveTrain.turn(0, 0.5);
         if(zone == LEFT){
-            driveTrain.strafe(1.4, 0.5);
+            driveTrain.turn(-90, 0.5);
+            driveTrain.move(1.4, 0.5);
         }
         else if(zone == MIDDLE){
         }
         else if(zone == RIGHT){
-            driveTrain.strafe(-1.4, 0.7);
+            driveTrain.turn(-90, 0.5);
+            driveTrain.move(-1.4, 0.7);
         }
+        driveTrain.turn(0, 0.5);
     }
 
     void tagToTelemetry(AprilTagDetection detection)

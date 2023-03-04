@@ -184,9 +184,9 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         slidesAndGripAS.closeGrip();
         Thread.sleep(125);
         //slidesAndGripAS.moveSlides(-200); //! relative now also idk did we need this
-        driveTrain.move(4.6, 0.5);
+        driveTrain.move(4.6, 0.3);
         Thread.sleep(85);
-        driveTrain.move(-0.6, 0.4);
+        driveTrain.move(-0.6, 0.3);
     }
 
     void dropCone(int coneLevel) throws InterruptedException {
@@ -195,7 +195,7 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         driveTrain.turn((float)(gyro.getCurrentAngle() + 1.8), 0.2);
         slidesAndGripAS.moveSlides(-5600); //! relative now
         Thread.sleep(750);
-        driveTrain.move(1, 0.2);
+        driveTrain.move(0.8, 0.2);
         Thread.sleep(250);
         //DROP STUFF
         slidesAndGripAS.moveSlides(-300); //! relative now
@@ -226,7 +226,7 @@ public class AutonLEFT_2_Cones extends LinearOpMode
         Thread.sleep(250);
         slidesAndGripAS.moveSlides(-1250);
         Thread.sleep(1000);
-        driveTrain.move(-1.6, 0.27);
+        driveTrain.move(-1.69, 0.27);
     }
 
     void park (int zone){
